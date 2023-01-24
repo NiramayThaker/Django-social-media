@@ -6,7 +6,7 @@ from .models import Profile
 
 
 # Create your views here.
-@login_required()
+@login_required(login_url='signin')
 def index(request):
 	return render(request, "index.html")
 
@@ -59,6 +59,12 @@ def signin(request):
 	return render(request, 'signin.html')
 
 
+@login_required(login_url="signin")
 def logout(request):
 	auth.logout(request)
-	return render('/')
+	return redirect('/')
+
+
+@login_required(login_url="signin")
+def settings(reuqest):
+	return render(request, 'settings.html')
