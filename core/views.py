@@ -12,7 +12,9 @@ def index(request):
 	# profile_data = Profile.objects.get(user=user_obj)
 	profile_data = Profile.objects.get(user=request.user.id)
 
-	context = {"profile_data": profile_data}
+	posts = Post.objects.all()
+
+	context = {"profile_data": profile_data, "posts": posts}
 	return render(request, "index.html", context=context)
 
 
@@ -29,6 +31,11 @@ def upload(request):
 		return redirect('/')
 
 	return redirect('/')
+
+
+@login_required(login_url='signin')
+def delete(request):
+	pass
 
 
 def signup(request):
