@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Post
+from .models import Profile, Post, LikePost
 
 
 # Create your views here.
@@ -11,7 +11,6 @@ def index(request):
 	# user_obj = User.objects.get(username=request.user.username)
 	# profile_data = Profile.objects.get(user=user_obj)
 	profile_data = Profile.objects.get(user=request.user.id)
-
 	posts = Post.objects.all()
 
 	context = {"profile_data": profile_data, "posts": posts}
@@ -33,9 +32,24 @@ def upload(request):
 	return redirect('/')
 
 
-@login_required(login_url='signin')
-def delete(request):
-	pass
+@login_required(login_url="signin")
+def like_post(request):
+	username = request.user.username
+	post_id = request.GET.get('post-id')
+	post = Post.objects.get(id=post_id)
+	like_filter = LikePost.objects.filter(post_id=post_id, username=username).first()
+
+	if like_filter is None:
+		new_like = LikePost.objects.create(post_id=post_id, username=username)
+		new_like.save()
+		post.no_of_likes += 1
+		post.save()
+		return redirect('/')
+	else:
+		like_filter.delete()
+		post.no_of_likes -= 1
+		post.save()
+		return redirect('/')
 
 
 def signup(request):
