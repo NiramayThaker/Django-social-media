@@ -1,3 +1,4 @@
+import random
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
@@ -26,9 +27,31 @@ def index(request):
 	
 	feed_list = list(chain(*feed))
 
-	posts = Post.objects.all()
+	# User Suggestions Section
+	all_users = User.objects.all()
+	curr_user = User.objects.filter(username=request.user.username)
+	user_following_all = [] + curr_user
 
-	context = {"profile_data": profile_data, "posts": feed_list}
+	for user in user_following:
+		user_list = User.objects.get(username=user.user)
+		user_following_all.append(user_list)
+
+	suggestion_list = [x for x in list(all_users) if (x not in list(user_following_all))]
+	random.shuffle(suggestion_list)
+
+	username_profile = []
+	username_profile_list = []
+
+	for users in suggestion_list:
+		username_profile.append(user.id)
+
+	for ids in username_profile:
+		profile_list = Profile.objects.filter(id_user=ids)
+		username_profile_list.append(profile_list)
+
+	suggestion_username_profile_list = list(chain(*username_profile_list))
+
+	context = {"profile_data": profile_data, "posts": feed_list, "suggestion_username_profile_list": suggestion_username_profile_list}
 	return render(request, "index.html", context=context)
 
 
@@ -122,7 +145,7 @@ def search(request):
 		username_object = User.objects.filter(username__icontains=username)
 		username_profile = []
 		username_profile_list = []
-		
+
 		for users in username_object:
 			username_profile.append(users.id)
 
