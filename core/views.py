@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Profile, Post, LikePost, Followers
+from itertools import chain
 
 
 # Create your views here.
@@ -11,9 +12,23 @@ def index(request):
 	# user_obj = User.objects.get(username=request.user.username)
 	# profile_data = Profile.objects.get(user=user_obj)
 	profile_data = Profile.objects.get(user=request.user.id)
+	
+	user_following_list = []
+	feed = []
+
+	user_following = Followers.objects.filter(follower=request.user.username)
+	for user in user_following:
+		user_following_list.append(user)
+	
+	for user_name in user_following_list:
+		feed_list = Post.objects.filter(user=user_name)
+		feed.append(feed_list)
+	
+	feed_list = list(chain(*feed))
+
 	posts = Post.objects.all()
 
-	context = {"profile_data": profile_data, "posts": posts}
+	context = {"profile_data": profile_data, "posts": feed_list}
 	return render(request, "index.html", context=context)
 
 
