@@ -41,12 +41,21 @@ def profile(request, pk):
 	followers = Followers.objects.filter(user=pk)
 	following = Followers.objects.filter(follower=pk)
 
+	follower_ = request.user.username
+	user = pk
+	if Followers.objects.filter(follower=follower_, user=user):
+		button_text = "Unfollow"
+	else:
+		button_text = "Follow"
+
 	context = {"user_profile": user_profile,
 			   "user_obj": user_obj,
 			   "user_posts": user_posts,
 			   "user_post_len": user_post_len,
+			   "followers": followers,
 			   "follower_len": len(followers),
 			   "following_len": len(following),
+			   "button_text": button_text,
 			   }
 
 	return render(request, 'profile.html', context=context)
