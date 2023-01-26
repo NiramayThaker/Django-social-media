@@ -21,7 +21,8 @@
 
 <header>
     <div class="header_inner">
-        <form action="" method="GET">
+        <form action="search" method="POST">
+            {% csrf_token %}
             <div class="left-side">
                 <!-- Logo -->
                 <div id="logo" class=" uk-hidden@s">
@@ -35,7 +36,7 @@
                 </div>-->
 
 <!--                <div class="header_search">-->
-                    <input type="text" placeholder="Search for username.." name="username">
+                    <input type="text" placeholder="Search for username.." name="username">&nbsp; &nbsp;
                     <button type="submit"> <i class="fa fa-search fa-1x"></i></button>
 
 <!--                    <div class="icon-search">-->
