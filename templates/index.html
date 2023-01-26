@@ -45,7 +45,7 @@
 
         </div>
         <div class="right-side lg:pr-4">
-            <p>Hello, {{request.user.username}}</p>
+<!--            <p>Hello, {{request.user.username}}</p>-->
             <!-- upload -->
             <a href="#"
                class="bg-pink-500 flex font-bold hidden hover:bg-pink-600 hover:text-white inline-block items-center lg:block max-h-10 mr-4 px-4 py-2 rounded shado text-white">
@@ -199,6 +199,7 @@
 
             <a href="#">
                 <img src="{{profile_data.profileimg.url}}" class="header-avatar" alt="">
+                <p>Hello, {{request.user.username}}</p>
             </a>
             <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
                 <ul>
@@ -234,7 +235,7 @@
                             </div>
                         </a>
                         <span class="block capitalize font-semibold ">
-                            <a href="#">{{post.user}}</a> </span>
+                            <a href="profile/{{post.user}}">{{post.user}}</a> </span>
                     </div>
                     <div>
                         <a href="#"> 
@@ -299,7 +300,7 @@
                     </div>
 
                     <p>
-                        <strong> <a href="#"> @{{post.user}}</a> </strong> {{post.caption}}
+                        <strong> <a href="profile/{{post.user}}"> @{{post.user}}</a> </strong> {{post.caption}}
                     </p>
                     <!--                                <div class="flex items-center space-x-3"> -->
                     <!--                                    <div class="flex items-center">-->

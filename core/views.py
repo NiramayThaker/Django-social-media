@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Post, LikePost
+from .models import Profile, Post, LikePost, Followers
 
 
 # Create your views here.
@@ -32,6 +32,26 @@ def upload(request):
 	return redirect('/')
 
 
+@login_required(login_url='signin')
+def profile(request, pk):
+	user_obj = User.objects.get(username=pk)
+	user_profile = Profile.objects.get(user=user_obj)
+	user_posts = Post.objects.filter(user=pk)
+	user_post_len = len(user_posts)
+	followers = Followers.objects.filter(user=pk)
+	following = Followers.objects.filter(follower=pk)
+
+	context = {"user_profile": user_profile,
+			   "user_obj": user_obj,
+			   "user_posts": user_posts,
+			   "user_post_len": user_post_len,
+			   "follower_len": len(followers),
+			   "following_len": len(following),
+			   }
+
+	return render(request, 'profile.html', context=context)
+
+
 @login_required(login_url="signin")
 def like_post(request):
 	username = request.user.username
@@ -50,6 +70,24 @@ def like_post(request):
 		post.no_of_likes -= 1
 		post.save()
 		return redirect('/')
+
+
+@login_required(login_url="signin")
+def follow(request):
+	if request.method == "POST":
+		follower = request.POST['follower']
+		user = request.POST['user']
+
+		if Followers.objects.filter(follower=follower, user=user).first():
+			delete_follower = Followers.objects.get(follower=follower, user=user)
+			delete_follower.delete()
+			return redirect(f'/profile/{user}')
+		else:
+			new_follower = Followers.objects.create(follower=follower, user=user)
+			new_follower.save()
+			return redirect(f'/profile/{user}')
+	else:
+		return redirect("/")
 
 
 def signup(request):
@@ -133,17 +171,3 @@ def settings(request):
 	return render(request, 'settings.html', context=context)
 
 
-@login_required(login_url='signin')
-def profile(request, pk):
-	user_obj = User.objects.get(username=pk)
-	user_profile = Profile.objects.get(user=user_obj)
-	user_posts = Post.objects.filter(user=pk)
-	user_post_len = len(user_posts)
-
-	context = {"user_profile": user_profile,
-			"user_obj": user_obj, 
-			"user_posts": user_posts, 
-			"user_post_len": user_post_len,
-		}
-
-	return render(request, 'profile.html', context=context)
