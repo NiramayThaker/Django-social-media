@@ -131,3 +131,19 @@ def settings(request):
 
 	context = {"user_profile": user_profile}
 	return render(request, 'settings.html', context=context)
+
+
+@login_required(login_url='signin')
+def profile(request, pk):
+	user_obj = User.objects.get(username=pk)
+	user_profile = Profile.objects.get(user=user_obj)
+	user_posts = Post.objects.filter(user=pk)
+	user_post_len = len(user_posts)
+
+	context = {"user_profile": user_profile,
+			"user_obj": user_obj, 
+			"user_posts": user_posts, 
+			"user_post_len": user_post_len,
+		}
+
+	return render(request, 'profile.html', context=context)

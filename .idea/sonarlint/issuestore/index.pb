@@ -9,5 +9,5 @@ E
 templates/signin.html,1\7\17b111ce7a937228f7ac42055363944e2fe3a1a9
 E
 templates/signup.html,7\b\7b67c1a6f2a7f65bff81b4b08078c3344a9f78aa
-F
-templates/profile.html,7\f\7f1863afc75308f4b2ba18256c163b6f3c56c5d1
+G
+templates/settings.html,0\d\0dec69dd01a66a4fe0037d0d54788cf1d41463f8
